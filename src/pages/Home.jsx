@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import AmbientParticles from '../components/AmbientParticles';
 import Reveal from '../components/Reveal';
 import './Home.css';
 
@@ -56,6 +57,7 @@ const Home = () => {
         <div className="home-page">
             <section className="hero-section" aria-labelledby="home-hero-title">
                 <div className="hero-backdrop" style={backdropStyle}></div>
+                <AmbientParticles />
                 <div className="hero-container">
                     <div className="hero-content container">
                         <p className="hero-brand">Lumière Bakery</p>
