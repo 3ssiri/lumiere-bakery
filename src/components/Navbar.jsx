@@ -1,10 +1,22 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import './Navbar.css';
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const [isScrolled, setIsScrolled] = useState(false);
     const logoSrc = `${import.meta.env.BASE_URL}logo.png`;
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 12);
+        };
+
+        handleScroll();
+        window.addEventListener('scroll', handleScroll, { passive: true });
+
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     const toggleMenu = () => {
         setIsOpen(prev => !prev);
@@ -19,7 +31,7 @@ const Navbar = () => {
     );
 
     return (
-        <nav className="navbar" aria-label="التنقل الرئيسي">
+        <nav className={`navbar${isScrolled ? ' navbar-scrolled' : ''}`} aria-label="التنقل الرئيسي">
             <div className="container navbar-container">
                 <Link to="/" className="navbar-logo" onClick={closeMenu}>
                     <img src={logoSrc} alt="شعار مخبز لوميير" className="logo-img" />

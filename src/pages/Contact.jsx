@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Reveal from '../components/Reveal';
 import { buildContactMessage, siteConfig } from '../content/site';
 import './Contact.css';
 
@@ -44,7 +45,7 @@ const Contact = () => {
                 <h1 id="contact-title" className="section-title">تواصل معنا</h1>
 
                 <div className="contact-content">
-                    <div className="contact-info" aria-labelledby="contact-info-title">
+                    <Reveal className="contact-info" aria-labelledby="contact-info-title">
                         <h2 id="contact-info-title">معلومات التواصل</h2>
                         <p>للطلبات اليومية، البوكسات، أو الاستفسارات الخاصة بالأنظمة الغذائية، تواصل معنا بالطريقة الأنسب لك.</p>
 
@@ -72,9 +73,9 @@ const Contact = () => {
                                 <p key={point}>{point}</p>
                             ))}
                         </div>
-                    </div>
+                    </Reveal>
 
-                    <div className="contact-form-container">
+                    <Reveal className="contact-form-container" delay={120}>
                         <div className="contact-form-header">
                             <p className="section-kicker">أرسل طلبك</p>
                             <h2>أخبرنا بما تحتاجه وسنعود إليك بالتفاصيل المناسبة.</h2>
@@ -148,7 +149,7 @@ const Contact = () => {
 
                             <button type="submit" className="btn btn-primary submit-btn">تجهيز الرسالة</button>
                         </form>
-                    </div>
+                    </Reveal>
                 </div>
             </div>
         </div>

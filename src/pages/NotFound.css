@@ -1,0 +1,35 @@
+.not-found-page {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+}
+
+.not-found-shell {
+    max-width: 42rem;
+    padding: 3rem;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 241, 227, 0.95));
+    border: 1px solid rgba(51, 51, 51, 0.08);
+    border-radius: 28px;
+}
+
+.not-found-text {
+    max-width: 34rem;
+    color: rgba(51, 51, 51, 0.72);
+}
+
+.not-found-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1.75rem;
+}
+
+@media (max-width: 768px) {
+    .not-found-shell {
+        padding: 2rem;
+    }
+
+    .not-found-actions {
+        flex-direction: column;
+    }
+}
