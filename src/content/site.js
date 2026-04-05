@@ -21,8 +21,8 @@ export const siteConfig = {
         { label: 'WhatsApp', href: 'https://wa.me/966500000000' }
     ],
     seo: {
-        url: 'https://lumierebakery.com',
-        image: 'https://lumierebakery.com/logo.png'
+        url: 'https://lumierebk.netlify.app',
+        image: 'https://lumierebk.netlify.app/logo.png'
     }
 };
 
