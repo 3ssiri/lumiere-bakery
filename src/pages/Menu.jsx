@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Seo from '../components/Seo';
 import './Menu.css';
 
 const Menu = () => {
@@ -42,6 +43,11 @@ const Menu = () => {
 
     return (
         <div className="menu-page section" aria-labelledby="menu-title">
+            <Seo
+                title="قائمة الطعام"
+                description="تصفح قائمة مخبز لوميير الصحية التي تشمل الفطور والغداء والعشاء والمخبوزات الخالية من القلوتين."
+                path="/menu"
+            />
             <div className="container">
                 <h1 id="menu-title" className="section-title">قائمة الطعام</h1>
 

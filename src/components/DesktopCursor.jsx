@@ -49,31 +49,12 @@ const DesktopCursor = () => {
 
     return (
         <AnimatedCursor
-            innerSize={10}
-            outerSize={34}
-            innerScale={0.9}
-            outerScale={1.6}
-            outerAlpha={0.18}
-            innerStyle={{
-                backgroundColor: '#D4A373',
-                mixBlendMode: 'difference',
-                zIndex: 1400
-            }}
-            outerStyle={{
-                border: '1px solid rgba(212, 163, 115, 0.55)',
-                backgroundColor: 'rgba(212, 163, 115, 0.12)',
-                zIndex: 1400
-            }}
-            clickables={[
-                'a',
-                'button',
-                'input',
-                'textarea',
-                'select',
-                '[role="button"]',
-                '.menu-tab',
-                '.floating-contact-trigger'
-            ]}
+            color="212, 163, 115"
+            dotSize={6}
+            outlineSize={22}
+            outlineScale={1.9}
+            dotScale={0.8}
+            outlineAlpha={0.1}
         />
     );
 };

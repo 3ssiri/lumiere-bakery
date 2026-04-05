@@ -1,4 +1,5 @@
 import React from 'react';
+import Seo from '../components/Seo';
 import './Services.css';
 
 const Services = () => {
@@ -43,6 +44,11 @@ const Services = () => {
 
     return (
         <div className="services-page section" aria-labelledby="services-title">
+            <Seo
+                title="خدماتنا"
+                description="استكشف خدمات مخبز لوميير من المخبوزات الصحية والوجبات اليومية إلى البوكسات والطلبات الخاصة للأنظمة الغذائية."
+                path="/services"
+            />
             <div className="container">
                 <h1 id="services-title" className="section-title">خدماتنا</h1>
                 <div className="services-grid">

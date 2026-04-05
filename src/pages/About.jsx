@@ -1,4 +1,5 @@
 import React from 'react';
+import Seo from '../components/Seo';
 import './About.css';
 
 const About = () => {
@@ -6,6 +7,11 @@ const About = () => {
 
     return (
         <div className="about-page section" aria-labelledby="about-title">
+            <Seo
+                title="من نحن"
+                description="تعرف على قصة مخبز لوميير الصحي ورؤيته في تقديم مخبوزات خالية من القلوتين ومصنوعة بمكونات طبيعية."
+                path="/about"
+            />
             <div className="container">
                 <h1 id="about-title" className="section-title">من نحن</h1>
 

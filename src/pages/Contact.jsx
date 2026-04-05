@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import Reveal from '../components/Reveal';
+import Seo from '../components/Seo';
 import { buildContactMessage, siteConfig } from '../content/site';
 import './Contact.css';
+
+const encodeFormData = (data) => new URLSearchParams(data).toString();
 
 const Contact = () => {
     const { brand, contact } = siteConfig;
@@ -19,6 +22,7 @@ const Contact = () => {
     const [formData, setFormData] = useState({
         ...initialFormData
     });
+    const [submissionStatus, setSubmissionStatus] = useState('idle');
     const [submittedRequest, setSubmittedRequest] = useState(null);
 
     const handleChange = (e) => {
@@ -26,21 +30,53 @@ const Contact = () => {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const message = buildContactMessage(formData);
         const subject = `${brand.arabicName} | ${formData.name} | ${formData.type}`;
-        setSubmittedRequest({
+        const submissionPayload = {
             subject,
             message,
             emailHref: `mailto:${contact.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`,
             whatsappHref: `https://wa.me/${contact.whatsappNumber}?text=${encodeURIComponent(message)}`
-        });
-        setFormData(initialFormData);
+        };
+
+        setSubmissionStatus('submitting');
+
+        try {
+            const response = await fetch('/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: encodeFormData({
+                    'form-name': 'contact',
+                    name: formData.name,
+                    phone: formData.phone,
+                    type: formData.type,
+                    message: formData.message,
+                    'bot-field': ''
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Submission failed');
+            }
+
+            setSubmittedRequest(submissionPayload);
+            setSubmissionStatus('success');
+            setFormData(initialFormData);
+        } catch (error) {
+            setSubmittedRequest(submissionPayload);
+            setSubmissionStatus('error');
+        }
     };
 
     return (
         <div className="contact-page section" aria-labelledby="contact-title">
+            <Seo
+                title="تواصل معنا"
+                description="أرسل طلبك أو استفسارك إلى مخبز لوميير مباشرة عبر نموذج التواصل أو واتساب أو البريد الإلكتروني."
+                path="/contact"
+            />
             <div className="container">
                 <h1 id="contact-title" className="section-title">تواصل معنا</h1>
 
@@ -80,17 +116,37 @@ const Contact = () => {
                             <p className="section-kicker">أرسل طلبك</p>
                             <h2>أخبرنا بما تحتاجه وسنعود إليك بالتفاصيل المناسبة.</h2>
                         </div>
-                        {submittedRequest && (
+                        {submissionStatus === 'success' && submittedRequest && (
                             <div className="submission-panel" aria-live="polite">
-                                <h3>تم تجهيز رسالتك</h3>
-                                <p>اختر الآن طريقة الإرسال المناسبة. تم ملء الرسالة تلقائياً لتسريع التواصل.</p>
+                                <h3>تم استلام طلبك بنجاح</h3>
+                                <p>وصل النموذج إلى الموقع. ويمكنك أيضاً استخدام إحدى القنوات المباشرة إذا رغبت في متابعة أسرع.</p>
                                 <div className="submission-actions">
                                     <a href={submittedRequest.emailHref} className="btn btn-primary">إرسال عبر البريد</a>
                                     <a href={submittedRequest.whatsappHref} className="btn btn-secondary" target="_blank" rel="noopener noreferrer">إرسال عبر واتساب</a>
                                 </div>
                             </div>
                         )}
-                        <form className="contact-form" onSubmit={handleSubmit} aria-label="نموذج التواصل">
+                        {submissionStatus === 'error' && submittedRequest && (
+                            <div className="submission-panel submission-panel-error" aria-live="polite">
+                                <h3>تعذر إرسال النموذج حالياً</h3>
+                                <p>يمكنك المتابعة فوراً عبر البريد أو واتساب إلى أن يتم تحديث بيانات التواصل أو معالجة المشكلة.</p>
+                                <div className="submission-actions">
+                                    <a href={submittedRequest.emailHref} className="btn btn-primary">إرسال عبر البريد</a>
+                                    <a href={submittedRequest.whatsappHref} className="btn btn-secondary" target="_blank" rel="noopener noreferrer">إرسال عبر واتساب</a>
+                                </div>
+                            </div>
+                        )}
+                        <form
+                            className="contact-form"
+                            name="contact"
+                            method="POST"
+                            data-netlify="true"
+                            data-netlify-honeypot="bot-field"
+                            onSubmit={handleSubmit}
+                            aria-label="نموذج التواصل"
+                        >
+                            <input type="hidden" name="form-name" value="contact" />
+                            <input type="hidden" name="bot-field" />
                             <div className="form-group">
                                 <label htmlFor="name">الاسم</label>
                                 <input
@@ -147,7 +203,9 @@ const Contact = () => {
                                 <small id="contact-message-help" className="form-help">اكتب تفاصيل الطلب أو الاستفسار بشكل مختصر وواضح.</small>
                             </div>
 
-                            <button type="submit" className="btn btn-primary submit-btn">تجهيز الرسالة</button>
+                            <button type="submit" className="btn btn-primary submit-btn" disabled={submissionStatus === 'submitting'}>
+                                {submissionStatus === 'submitting' ? 'جارٍ الإرسال...' : 'إرسال الطلب'}
+                            </button>
                         </form>
                     </Reveal>
                 </div>

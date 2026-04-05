@@ -3,36 +3,32 @@ import React, { useEffect, useState } from 'react';
 const particleOptions = {
     fullScreen: { enable: false },
     background: { color: { value: 'transparent' } },
-    fpsLimit: 60,
+    fpsLimit: 40,
     detectRetina: true,
     particles: {
         number: {
-            value: 20,
-            density: { enable: true, area: 900 }
+            value: 10,
+            density: { enable: true, area: 1200 }
         },
         color: {
             value: ['#D4A373', '#CCD5AE', '#E9EDC9']
         },
         opacity: {
-            value: 0.28
+            value: 0.14
         },
         size: {
-            value: { min: 1.5, max: 4 }
+            value: { min: 1, max: 2.4 }
         },
         move: {
             enable: true,
-            speed: 0.45,
+            speed: 0.16,
             direction: 'none',
             outModes: {
                 default: 'out'
             }
         },
         links: {
-            enable: true,
-            distance: 120,
-            color: '#D4A373',
-            opacity: 0.12,
-            width: 1
+            enable: false
         }
     },
     interactivity: {

@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import AmbientParticles from '../components/AmbientParticles';
 import Reveal from '../components/Reveal';
+import Seo from '../components/Seo';
 import './Home.css';
 
 const Home = () => {
     const heroImageSrc = `${import.meta.env.BASE_URL}hero.png`;
-    const [scrollY, setScrollY] = useState(0);
+    const backdropRef = useRef(null);
+    const heroImageRef = useRef(null);
     const highlights = [
         { title: 'مخبوزات خالية من القلوتين', text: 'مناسبة لروتين صحي يومي دون التنازل عن المذاق.' },
         { title: 'تحضير يومي طازج', text: 'دفعات محدودة تخرج يومياً للحفاظ على الجودة والقوام.' },
@@ -36,27 +38,44 @@ const Home = () => {
     ];
 
     useEffect(() => {
-        const handleScroll = () => {
-            setScrollY(window.scrollY);
+        let ticking = false;
+
+        const updateParallax = () => {
+            const scrollY = window.scrollY;
+
+            if (backdropRef.current) {
+                backdropRef.current.style.transform = `translateY(${Math.min(scrollY * 0.08, 32)}px)`;
+            }
+
+            if (heroImageRef.current) {
+                heroImageRef.current.style.setProperty('--hero-shift', `${Math.min(scrollY * 0.12, 48)}px`);
+            }
+
+            ticking = false;
         };
 
-        handleScroll();
+        const handleScroll = () => {
+            if (!ticking) {
+                window.requestAnimationFrame(updateParallax);
+                ticking = true;
+            }
+        };
+
+        updateParallax();
         window.addEventListener('scroll', handleScroll, { passive: true });
 
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    const backdropStyle = {
-        transform: `translateY(${Math.min(scrollY * 0.08, 32)}px)`
-    };
-    const heroImageStyle = {
-        '--hero-shift': `${Math.min(scrollY * 0.12, 48)}px`
-    };
-
     return (
         <div className="home-page">
+            <Seo
+                title="الرئيسية"
+                description="مخبز لوميير الصحي يقدم مخبوزات خالية من القلوتين، خيارات يومية للفطور والغداء والعشاء، وتجهيزات خاصة للمناسبات."
+                path="/"
+            />
             <section className="hero-section" aria-labelledby="home-hero-title">
-                <div className="hero-backdrop" style={backdropStyle}></div>
+                <div ref={backdropRef} className="hero-backdrop"></div>
                 <AmbientParticles />
                 <div className="hero-container">
                     <div className="hero-content container">
@@ -80,7 +99,7 @@ const Home = () => {
                         </ul>
                     </div>
                     <div className="hero-image">
-                        <img src={heroImageSrc} alt="تشكيلة من منتجات مخبز لوميير الصحية" style={heroImageStyle} />
+                        <img ref={heroImageRef} src={heroImageSrc} alt="تشكيلة من منتجات مخبز لوميير الصحية" />
                     </div>
                 </div>
             </section>
