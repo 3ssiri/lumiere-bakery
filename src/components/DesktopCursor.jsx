@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import AnimatedCursor from 'react-animated-cursor';
 
 const DesktopCursor = () => {
     const [isEnabled, setIsEnabled] = useState(false);
+    const [cursorModule, setCursorModule] = useState(null);
 
     useEffect(() => {
         const pointerQuery = window.matchMedia('(pointer: fine)');
@@ -23,9 +23,29 @@ const DesktopCursor = () => {
         };
     }, []);
 
-    if (!isEnabled) {
+    useEffect(() => {
+        if (!isEnabled) {
+            return undefined;
+        }
+
+        let isMounted = true;
+
+        import('react-animated-cursor').then((module) => {
+            if (isMounted) {
+                setCursorModule(() => module.default);
+            }
+        });
+
+        return () => {
+            isMounted = false;
+        };
+    }, [isEnabled]);
+
+    if (!isEnabled || !cursorModule) {
         return null;
     }
+
+    const AnimatedCursor = cursorModule;
 
     return (
         <AnimatedCursor

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { flip, offset, shift, useFloating } from '@floating-ui/react-dom';
+import { autoUpdate, flip, offset, shift, useFloating } from '@floating-ui/react-dom';
 import { siteConfig } from '../content/site';
 import './FloatingContact.css';
 
@@ -9,8 +9,10 @@ const FloatingContact = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [isDesktop, setIsDesktop] = useState(false);
     const { x, y, reference, floating, strategy, update } = useFloating({
+        strategy: 'fixed',
         placement: 'top-end',
-        middleware: [offset(14), flip(), shift({ padding: 12 })]
+        middleware: [offset(14), flip(), shift({ padding: 12 })],
+        whileElementsMounted: autoUpdate
     });
 
     useEffect(() => {

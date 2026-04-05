@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Particles, { initParticlesEngine } from '@tsparticles/react';
-import { loadSlim } from '@tsparticles/slim';
 
 const particleOptions = {
     fullScreen: { enable: false },
@@ -53,6 +51,7 @@ const particleOptions = {
 const AmbientParticles = () => {
     const [isReady, setIsReady] = useState(false);
     const [isEnabled, setIsEnabled] = useState(false);
+    const [particlesModule, setParticlesModule] = useState(null);
 
     useEffect(() => {
         const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -77,18 +76,38 @@ const AmbientParticles = () => {
             return undefined;
         }
 
-        initParticlesEngine(async (engine) => {
-            await loadSlim(engine);
-        }).then(() => setIsReady(true));
+        let isMounted = true;
 
-        return undefined;
+        Promise.all([
+            import('@tsparticles/react'),
+            import('@tsparticles/slim')
+        ]).then(async ([reactModule, slimModule]) => {
+            if (!isMounted) {
+                return;
+            }
+
+            await reactModule.initParticlesEngine(async (engine) => {
+                await slimModule.loadSlim(engine);
+            });
+
+            if (isMounted) {
+                setParticlesModule(() => reactModule.default);
+                setIsReady(true);
+            }
+        });
+
+        return () => {
+            isMounted = false;
+        };
     }, [isEnabled]);
 
-    if (!isEnabled || !isReady) {
+    if (!isEnabled || !isReady || !particlesModule) {
         return null;
     }
 
-    return <Particles className="ambient-particles" options={particleOptions} />;
+    const ParticlesComponent = particlesModule;
+
+    return <ParticlesComponent className="ambient-particles" options={particleOptions} />;
 };
 
 export default AmbientParticles;

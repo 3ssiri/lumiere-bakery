@@ -4,7 +4,6 @@ import Footer from './Footer';
 import FloatingContact from './FloatingContact';
 import DesktopCursor from './DesktopCursor';
 import { Outlet } from 'react-router-dom';
-import Lenis from 'lenis';
 
 const Layout = () => {
     React.useEffect(() => {
@@ -14,24 +13,37 @@ const Layout = () => {
             return undefined;
         }
 
-        const lenis = new Lenis({
-            duration: 1.05,
-            smoothWheel: true,
-            touchMultiplier: 1.1
+        let frameId;
+        let lenis;
+        let isMounted = true;
+
+        import('lenis').then((module) => {
+            if (!isMounted) {
+                return;
+            }
+
+            const Lenis = module.default;
+
+            lenis = new Lenis({
+                duration: 1.05,
+                smoothWheel: true,
+                touchMultiplier: 1.1
+            });
+
+            const raf = (time) => {
+                lenis.raf(time);
+                frameId = window.requestAnimationFrame(raf);
+            };
+
+            frameId = window.requestAnimationFrame(raf);
         });
 
-        let frameId;
-
-        const raf = (time) => {
-            lenis.raf(time);
-            frameId = window.requestAnimationFrame(raf);
-        };
-
-        frameId = window.requestAnimationFrame(raf);
-
         return () => {
+            isMounted = false;
             window.cancelAnimationFrame(frameId);
-            lenis.destroy();
+            if (lenis) {
+                lenis.destroy();
+            }
         };
     }, []);
 
